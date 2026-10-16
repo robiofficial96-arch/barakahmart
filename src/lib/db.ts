@@ -1,34 +1,100 @@
-import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-const dataDir = path.join(process.cwd(), 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+export interface Order {
+  id: number;
+  order_id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  package_name: string;
+  package_qty: number;
+  package_price: number;
+  delivery_area: string;
+  delivery_charge: number;
+  total_amount: number;
+  order_type: string;
+  status: string;
+  notes: string;
+  created_at: string;
 }
 
-const dbPath = path.join(dataDir, 'orders.db');
-const db = new Database(dbPath);
+const dataDir = path.join(process.cwd(), 'data');
+const jsonPath = path.join(dataDir, 'orders.json');
 
-// Create orders table
-db.exec(`
-  CREATE TABLE IF NOT EXISTS orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_id TEXT UNIQUE NOT NULL,
-    customer_name TEXT NOT NULL,
-    customer_phone TEXT NOT NULL,
-    customer_address TEXT NOT NULL,
-    package_name TEXT NOT NULL,
-    package_qty INTEGER NOT NULL,
-    package_price INTEGER NOT NULL,
-    delivery_area TEXT NOT NULL,
-    delivery_charge INTEGER NOT NULL,
-    total_amount INTEGER NOT NULL,
-    order_type TEXT DEFAULT 'form',
-    status TEXT DEFAULT 'pending',
-    notes TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+function ensureFile() {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+  if (!fs.existsSync(jsonPath)) {
+    fs.writeFileSync(jsonPath, JSON.stringify([], null, 2), 'utf-8');
+  }
+}
 
-export default db;
+export function getOrders(): Order[] {
+  ensureFile();
+  try {
+    const raw = fs.readFileSync(jsonPath, 'utf-8');
+    const orders: Order[] = JSON.parse(raw);
+    return orders.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  } catch (err) {
+    console.error('Error reading orders:', err);
+    return [];
+  }
+}
+
+export function createOrder(data: {
+  order_id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_address: string;
+  package_name: string;
+  package_qty: number;
+  package_price: number;
+  delivery_area: string;
+  delivery_charge: number;
+  total_amount: number;
+  order_type?: string;
+  status?: string;
+  notes?: string;
+}): Order {
+  ensureFile();
+  const orders = getOrders();
+  const newOrder: Order = {
+    id: orders.length > 0 ? Math.max(...orders.map((o) => o.id)) + 1 : 1,
+    order_id: data.order_id,
+    customer_name: data.customer_name,
+    customer_phone: data.customer_phone,
+    customer_address: data.customer_address,
+    package_name: data.package_name,
+    package_qty: data.package_qty,
+    package_price: data.package_price,
+    delivery_area: data.delivery_area,
+    delivery_charge: data.delivery_charge,
+    total_amount: data.total_amount,
+    order_type: data.order_type || 'form',
+    status: data.status || 'pending',
+    notes: data.notes || '',
+    created_at: new Date().toISOString()
+  };
+
+  orders.unshift(newOrder);
+  fs.writeFileSync(jsonPath, JSON.stringify(orders, null, 2), 'utf-8');
+  return newOrder;
+}
+
+export function updateOrderStatus(orderId: string, status: string): boolean {
+  ensureFile();
+  const orders = getOrders();
+  const index = orders.findIndex((o) => o.order_id === orderId);
+  if (index === -1) return false;
+  orders[index].status = status;
+  fs.writeFileSync(jsonPath, JSON.stringify(orders, null, 2), 'utf-8');
+  return true;
+}
+
+export default {
+  getOrders,
+  createOrder,
+  updateOrderStatus
+};

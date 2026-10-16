@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import { createOrder, getOrders } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
@@ -27,28 +27,20 @@ export async function POST(request: Request) {
 
     const orderId = `BM-${Date.now().toString().slice(-6)}`;
 
-    const stmt = db.prepare(`
-      INSERT INTO orders (
-        order_id, customer_name, customer_phone, customer_address,
-        package_name, package_qty, package_price, delivery_area,
-        delivery_charge, total_amount, order_type, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    stmt.run(
-      orderId,
-      customerName,
-      customerPhone,
-      customerAddress,
-      packageName || '১ কেজি প্রিমিয়াম খেজুরের গুড়',
-      packageQty || 1,
-      packagePrice || 490,
-      deliveryArea || 'dhaka',
-      deliveryCharge || 70,
-      totalAmount || 560,
-      orderType,
+    createOrder({
+      order_id: orderId,
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      customer_address: customerAddress,
+      package_name: packageName || '১ কেজি প্রিমিয়াম খেজুরের গুড়',
+      package_qty: packageQty || 1,
+      package_price: packagePrice || 490,
+      delivery_area: deliveryArea || 'dhaka',
+      delivery_charge: deliveryCharge || 70,
+      total_amount: totalAmount || 560,
+      order_type: orderType,
       notes
-    );
+    });
 
     return NextResponse.json({
       success: true,
@@ -66,8 +58,7 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const stmt = db.prepare(`SELECT * FROM orders ORDER BY created_at DESC`);
-    const orders = stmt.all();
+    const orders = getOrders();
     return NextResponse.json({ success: true, orders });
   } catch (error) {
     console.error('Fetch orders error:', error);
