@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { 
   ShoppingBag, 
   Sparkles, 
@@ -298,13 +299,20 @@ export default function LandingPage() {
         {/* Brand Header */}
         <div className="text-center mb-10">
           
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 border border-amber-300/80 text-[#92400E] px-5 py-2 rounded-full text-xs sm:text-sm font-bold shadow-sm">
-            <Crown className="w-4 h-4 text-amber-600" />
-            <span>BARAKAH MART BD • হাফেজ আতাউল্লাহ মাহমুদ</span>
-            <Crown className="w-4 h-4 text-amber-600" />
+          {/* Official Barakah Mart Logo */}
+          <div className="flex justify-center mb-3">
+            <div className="relative w-48 sm:w-64 h-16 sm:h-20 drop-shadow-sm">
+              <Image
+                src="/barakah-mart-logo.svg"
+                alt="Barakah Mart Logo"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
           </div>
 
-          <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-black text-[#451A03] leading-[1.25] tracking-tight">
+          <h1 className="mt-2 text-3xl sm:text-5xl md:text-6xl font-black text-[#451A03] leading-[1.25] tracking-tight">
             প্রকৃতির খাঁটি উপহার — <br className="hidden sm:inline" />
             <span className="text-[#B45309] inline-block mt-1">
               সুন্দরবনের চাকের ১০০% নির্ভেজাল কাঁচা মধু
@@ -312,7 +320,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-4 text-base sm:text-lg text-stone-700 max-w-2xl mx-auto leading-relaxed font-medium">
-            "বারাকাহ মার্ট বিডি থেকে আমি হাফেজ আতাউল্লাহ মাহমুদ আপনাকে স্বাগতম জানাচ্ছি। আমাদের প্রতিটি প্রডাক্ট আপনাদের দিচ্ছি সম্পূর্ণ নির্ভেজাল ও শতভাগ সততার সাথে।"
+            সরাসরি সুন্দরবনের অভিজ্ঞ মৌয়ালদের সংগৃহীত প্রাকৃতিক চাকের কাঁচা মধু। কোনো প্রকার চিনি, ভেজাল বা রাসায়নিক প্রসেসিং ছাড়াই শতভাগ সততার সাথে আপনাদের পৌঁছে দেওয়া হচ্ছে।
           </p>
 
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-bold">
