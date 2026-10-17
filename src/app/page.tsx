@@ -860,6 +860,17 @@ export default function LandingPage() {
           </div>
 
           <p className="text-[11px] text-stone-400 pt-2">© 2026 Barakah Mart BD. All rights reserved.</p>
+          <p className="text-[11px] text-stone-500 font-medium">
+            ডিজাইন ও ডেভেলপমেন্ট:{' '}
+            <a
+              href="https://wa.me/8801969343158"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#B45309] hover:text-[#92400E] font-bold underline underline-offset-2 transition-colors"
+            >
+              CodeHive Studio
+            </a>
+          </p>
         </footer>
 
       </main>
