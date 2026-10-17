@@ -328,29 +328,40 @@ export default function LandingPage() {
         <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white border-2 border-amber-300/80 mb-12">
           <div className="grid grid-cols-1 md:grid-cols-2 items-center">
             
-            {/* Pure Honey Showcase Graphic */}
-            <div className="relative h-80 sm:h-96 md:h-full min-h-[400px] w-full bg-gradient-to-br from-[#92400E] via-[#B45309] to-[#78350F] overflow-hidden flex flex-col items-center justify-center p-8 text-center text-white">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-400/40 via-transparent to-black/35"></div>
+            {/* Pure Honey Showcase with Real Product Photo */}
+            <div className="relative h-80 sm:h-[420px] md:h-full min-h-[400px] w-full overflow-hidden group bg-stone-900">
+              <Image
+                src="/amber-bottles-honey.png"
+                alt="বারাকাহ মার্ট সুন্দরবনের খাঁটি কাঁচা মধু"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
               
-              {/* Giant Glowing Honey Jar Graphic */}
-              <div className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-amber-400/20 backdrop-blur-md p-4 flex items-center justify-center border-4 border-amber-300/50 shadow-2xl mb-4 group hover:scale-105 transition-transform duration-500">
-                <span className="text-7xl sm:text-8xl animate-pulse">🍯</span>
+              {/* Subtle Luxury Gradient Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"></div>
+
+              {/* Floating Quality Badge */}
+              <div className="absolute top-4 left-4 z-10">
+                <span className="inline-flex items-center gap-1.5 bg-amber-500/95 backdrop-blur-md text-[#3B1505] text-[11px] sm:text-xs font-black px-3.5 py-1.5 rounded-full shadow-lg border border-amber-300">
+                  <Sparkles className="w-3.5 h-3.5 fill-[#3B1505]" /> ১০০% খাঁটি কাঁচা মধু (Raw Wild Honey)
+                </span>
               </div>
 
-              <div className="relative z-10">
-                <div className="inline-block bg-amber-950/70 backdrop-blur-sm text-amber-200 text-xs font-black px-4 py-1.5 rounded-full border border-amber-400/40 mb-2 shadow-sm">
-                  ১০০% খাঁটি কাঁচা মধু (Raw Wild Honey)
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-amber-100">
+              {/* Caption Overlay */}
+              <div className="absolute bottom-4 left-4 right-4 z-10 text-white space-y-1.5">
+                <h3 className="text-xl sm:text-2xl font-black text-amber-200 drop-shadow-md">
                   প্রাকৃতিক মৌচাকের নির্ভেজাল মধু
                 </h3>
-                <p className="text-xs sm:text-sm text-amber-200/90 mt-1.5 max-w-xs mx-auto leading-relaxed">
+                <p className="text-xs sm:text-sm text-stone-200 leading-relaxed font-medium drop-shadow-sm">
                   বুনো ফুলের তাজা মিষ্টি সুবাস ও প্রাকৃতিক অ্যান্টি-অক্সিডেন্টে ভরপুর।
                 </p>
-              </div>
-
-              <div className="absolute bottom-3.5 left-3.5 right-3.5 bg-black/60 backdrop-blur-md text-white text-xs p-2.5 rounded-2xl border border-white/20 text-center font-medium shadow-lg z-10">
-                ✨ কোনো হিট বা কেমিক্যাল প্রসেসিং নেই — প্রাকৃতিক এনজাইম অক্ষুণ্ণ
+                <div className="pt-1 flex flex-wrap items-center gap-2 text-[11px] text-amber-300 font-bold">
+                  <span>✨ কোনো হিট বা কেমিক্যাল নেই</span>
+                  <span>•</span>
+                  <span>🌿 ন্যাচারাল এনজাইম অক্ষুণ্ণ</span>
+                </div>
               </div>
             </div>
 
