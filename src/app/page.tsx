@@ -281,27 +281,15 @@ export default function LandingPage() {
       {/* ================= DYNAMIC FLYING HONEY BEE COMPONENT ================= */}
       <FlyingBee scrollY={scrollY} />
 
-      {/* Top Luxury Urgency Bar */}
-      <div className="relative z-20 bg-gradient-to-r from-[#602705] via-[#853407] to-[#602705] text-amber-100 py-2.5 px-4 text-center text-xs sm:text-sm font-semibold tracking-wide shadow-lg border-b border-amber-500/30 flex flex-wrap items-center justify-center gap-3">
-        <div className="flex items-center gap-1.5 text-amber-300 font-black">
-          <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: '6s' }} />
-          <span>বিশেষ মূল্যছাড় অফার শেষ হতে বাকি:</span>
-        </div>
-        <UrgencyTimer />
-        <span className="hidden md:inline bg-gradient-to-r from-amber-400 to-amber-300 text-[#421204] text-[11px] px-2.5 py-0.5 rounded-full font-black shadow-sm">
-          সীমিত স্টক
-        </span>
-      </div>
-
       {/* Main Container */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12 relative z-10">
 
         {/* Brand Header */}
         <div className="text-center mb-10">
           
-          {/* Official Barakah Mart Logo */}
-          <div className="flex justify-center mb-3">
-            <div className="relative w-48 sm:w-64 h-16 sm:h-20 drop-shadow-sm">
+          {/* Official Barakah Mart Logo - Prominent & Large */}
+          <div className="flex justify-center mb-5">
+            <div className="relative w-64 sm:w-80 md:w-96 h-24 sm:h-28 md:h-32 drop-shadow-md">
               <Image
                 src="/barakah-mart-logo.svg"
                 alt="Barakah Mart Logo"
