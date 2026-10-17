@@ -161,7 +161,7 @@ export default function LandingPage() {
   };
 
   // Business WhatsApp Number
-  const WHATSAPP_NUMBER = '8801700000000'; 
+  const WHATSAPP_NUMBER = '8801612681708'; 
 
   // Calculate pricing
   const isFreeDelivery = selectedPkg.id === 'pkg-3';
@@ -857,10 +857,23 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="mt-14 text-center text-xs text-stone-600 pb-10 space-y-2">
-          <p className="font-black text-stone-800 text-sm">Barakah Mart BD • বিশুদ্ধতাই আমাদের পরিচয়</p>
-          <p>যেকোনো জিজ্ঞাসা বা প্রয়োজনে কল করুন: <a href="tel:01700000000" className="text-[#B45309] font-bold">01700-000000</a></p>
-          <p className="text-[11px] text-stone-400">© 2026 Barakah Mart BD. All rights reserved.</p>
+        <footer className="mt-14 text-center text-xs text-stone-600 pb-10 space-y-3">
+          <p className="font-black text-stone-800 text-sm sm:text-base">Barakah Mart BD • বিশুদ্ধতাই আমাদের পরিচয়</p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <span className="text-stone-700 font-medium">যেকোনো জিজ্ঞাসা বা সরাসরি WhatsApp-এ যোগাযোগ:</span>
+            <a 
+              href="https://wa.me/8801612681708?text=আসসালামু%20আলাইকুম,%20Barakah%20Mart%20BD%20থেকে%20মধু%20সম্পর্কে%20জানতে%20চাই।"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-full shadow-sm hover:shadow transition duration-150 text-xs sm:text-sm active:scale-95"
+            >
+              <MessageCircle className="w-4 h-4 fill-white" />
+              <span>+880 1612-681708</span>
+            </a>
+          </div>
+
+          <p className="text-[11px] text-stone-400 pt-2">© 2026 Barakah Mart BD. All rights reserved.</p>
         </footer>
 
       </main>
