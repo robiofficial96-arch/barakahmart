@@ -79,7 +79,7 @@ export default function AdminPage() {
             <h1 className="text-2xl font-black text-stone-900">
               অর্ডার ম্যানেজমেন্ট ড্যাশবোর্ড
             </h1>
-            <p className="text-xs text-stone-500">Barakah Mart BD - খেজুরের গুড় সেলস ট্র্যাকার</p>
+            <p className="text-xs text-stone-500">Barakah Mart BD - সুন্দরবনের খাঁটি কাঁচা মধু সেলস ট্র্যাকার</p>
           </div>
           <div className="flex items-center gap-3">
             <button
