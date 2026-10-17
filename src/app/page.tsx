@@ -304,11 +304,10 @@ export default function LandingPage() {
             <Crown className="w-4 h-4 text-amber-600" />
           </div>
 
-          <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-black text-[#451A03] leading-[1.22] tracking-tight">
+          <h1 className="mt-5 text-3xl sm:text-5xl md:text-6xl font-black text-[#451A03] leading-[1.25] tracking-tight">
             প্রকৃতির খাঁটি উপহার — <br className="hidden sm:inline" />
-            <span className="text-[#B45309] relative inline-block mt-1">
+            <span className="text-[#B45309] inline-block mt-1">
               সুন্দরবনের চাকের ১০০% নির্ভেজাল কাঁচা মধু
-              <span className="absolute bottom-1.5 left-0 w-full h-3 bg-amber-300/50 -z-10 rounded"></span>
             </span>
           </h1>
 
