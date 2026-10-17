@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface FlyingBeeProps {
   scrollY: number;
@@ -8,12 +8,26 @@ interface FlyingBeeProps {
 
 export default function FlyingBee({ scrollY }: FlyingBeeProps) {
   const [windowWidth, setWindowWidth] = useState(1200);
+  const [windowHeight, setWindowHeight] = useState(800);
   const [mounted, setMounted] = useState(false);
+
+  // Dragging states
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
+  const [dragFacingLeft, setDragFacingLeft] = useState(false);
+  const [dragTilt, setDragTilt] = useState(0);
+  const [speechState, setSpeechState] = useState<'normal' | 'caught' | 'released'>('normal');
+
+  const lastPosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     setMounted(true);
     setWindowWidth(window.innerWidth);
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    setWindowHeight(window.innerHeight);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -22,8 +36,63 @@ export default function FlyingBee({ scrollY }: FlyingBeeProps) {
 
   const isMobile = windowWidth < 640;
 
+  // Touch / Mouse Drag Event Handlers
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
+    setIsDragging(true);
+    const currentX = Math.max(20, Math.min(windowWidth - 20, e.clientX));
+    const currentY = Math.max(20, Math.min(windowHeight - 20, e.clientY));
+    setDragPos({ x: currentX, y: currentY });
+    lastPosRef.current = { x: currentX, y: currentY };
+    setSpeechState('caught');
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    e.preventDefault();
+
+    const currentX = Math.max(20, Math.min(windowWidth - 20, e.clientX));
+    const currentY = Math.max(20, Math.min(windowHeight - 20, e.clientY));
+
+    const dx = currentX - lastPosRef.current.x;
+
+    if (Math.abs(dx) > 1) {
+      setDragFacingLeft(dx < 0);
+      setDragTilt(Math.max(-25, Math.min(25, dx * 1.5)));
+    }
+
+    lastPosRef.current = { x: currentX, y: currentY };
+    setDragPos({ x: currentX, y: currentY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    setIsDragging(false);
+    setDragTilt(0);
+    setSpeechState('released');
+    setTimeout(() => {
+      setSpeechState('normal');
+    }, 1800);
+  };
+
+  const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    setIsDragging(false);
+    setDragTilt(0);
+    setSpeechState('normal');
+  };
+
   // Smooth sinusoidal trajectory across the width
-  // When scrolling, the bee moves from Left to Right and back across sections!
+  // When scrolling and not touching, the bee moves from Left to Right and back across sections!
   const progress = scrollY * 0.0035; 
   const horizontalFactor = (Math.sin(progress) + 1) / 2; // oscillates smoothly between 0 and 1
   
@@ -41,28 +110,58 @@ export default function FlyingBee({ scrollY }: FlyingBeeProps) {
   const isFlyingLeft = Math.cos(progress) < 0;
   const tiltDeg = Math.cos(progress) * 16;
 
+  const currentFacingLeft = isDragging ? dragFacingLeft : isFlyingLeft;
+  const beeOffset = isMobile ? 32 : 40;
+
   return (
     <div
-      className="fixed z-50 pointer-events-none select-none transition-transform duration-200 ease-out"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      className="fixed z-50 pointer-events-auto select-none touch-none cursor-grab active:cursor-grabbing transition-transform"
       style={{
-        top: `${topPercent}vh`,
-        left: `${xPos}px`,
-        transform: `rotate(${tiltDeg}deg) ${isFlyingLeft ? 'scaleX(-1)' : 'scaleX(1)'}`,
+        top: isDragging ? `${dragPos.y - beeOffset}px` : `${topPercent}vh`,
+        left: isDragging ? `${dragPos.x - beeOffset}px` : `${xPos}px`,
+        transform: isDragging
+          ? `rotate(${dragTilt}deg) ${dragFacingLeft ? 'scaleX(-1)' : 'scaleX(1)'}`
+          : `rotate(${tiltDeg}deg) ${isFlyingLeft ? 'scaleX(-1)' : 'scaleX(1)'}`,
+        transition: isDragging
+          ? 'transform 0.1s ease-out'
+          : 'left 0.75s cubic-bezier(0.2, 0.9, 0.3, 1), top 0.75s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.2s ease-out',
       }}
     >
       <div className="relative">
         
         {/* Floating Speech Tag (keeps text readable even when bee flips) */}
         <div 
-          className="absolute -top-7 left-1/2 transform -translate-x-1/2 bg-amber-500 text-white font-black text-[9px] sm:text-[11px] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300 flex items-center gap-1 whitespace-nowrap animate-pulse"
-          style={{ transform: `scaleX(${isFlyingLeft ? -1 : 1}) translateX(-50%)` }}
+          className="absolute -top-7 left-1/2 transform -translate-x-1/2 bg-amber-500 text-white font-black text-[9px] sm:text-[11px] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300 flex items-center gap-1 whitespace-nowrap animate-pulse pointer-events-none"
+          style={{ transform: `scaleX(${currentFacingLeft ? -1 : 1}) translateX(-50%)` }}
         >
-          <span>🍯</span>
-          <span>খাঁটি মধুর সুবাস!</span>
+          {speechState === 'caught' ? (
+            <>
+              <span>🐝</span>
+              <span>হিহি! আমাকে ধরে ফেলেছো!</span>
+            </>
+          ) : speechState === 'released' ? (
+            <>
+              <span>🌸</span>
+              <span>উড়ে ফিরে যাচ্ছি...</span>
+            </>
+          ) : (
+            <>
+              <span>🍯</span>
+              <span>খাঁটি মধুর সুবাস!</span>
+            </>
+          )}
         </div>
 
         {/* 100% Transparent SVG Animated Bee with rapid wing flap */}
-        <div className="w-16 h-16 sm:w-20 sm:h-20 filter drop-shadow-[0_8px_16px_rgba(245,158,11,0.55)]">
+        <div className={`w-16 h-16 sm:w-20 sm:h-20 filter transition-transform duration-200 ${
+          isDragging 
+            ? 'scale-110 drop-shadow-[0_12px_24px_rgba(245,158,11,0.85)]' 
+            : 'drop-shadow-[0_8px_16px_rgba(245,158,11,0.55)]'
+        }`}>
           <svg
             viewBox="0 0 160 160"
             className="w-full h-full overflow-visible"
